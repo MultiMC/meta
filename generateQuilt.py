@@ -42,7 +42,7 @@ def processLoaderVersion(loaderVersion, it, loaderData):
     version.libraries = []
     version.libraries.extend(loaderData.libraries.common)
     version.libraries.extend(loaderData.libraries.client)
-    loaderLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.quiltmc.org")
+    loaderLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.quiltmc.org/repository/release")
     version.libraries.append(loaderLib)
     loaderVersions.append(version)
 
@@ -56,7 +56,7 @@ def processIntermediaryVersion(it):
     version.type = "release"
     version.libraries = []
     version.volatile = True
-    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.quiltmc.org")
+    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.quiltmc.org/repository/release")
     version.libraries.append(mappingLib)
     intermediaryVersions.append(version)
 

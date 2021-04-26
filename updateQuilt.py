@@ -70,12 +70,12 @@ mkdirs("upstream/quilt/jars")
 for component in ["intermediary", "loader"]:
     index = get_json_file("upstream/quilt/meta-v3/" + component + ".json", "https://meta.quiltmc.org/v3/versions/" + component)
     for it in index:
-        jarMavenUrl = get_maven_url(it["maven"], "https://maven.quiltmc.org/", ".jar")
+        jarMavenUrl = get_maven_url(it["maven"], "https://maven.quiltmc.org/repository/release", ".jar")
         compute_jar_file("upstream/quilt/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
 
 # for each loader, download installer JSON file from maven
 with open("upstream/quilt/meta-v3/loader.json", 'r', encoding='utf-8') as loaderVersionIndexFile:
     loaderVersionIndex = json.load(loaderVersionIndexFile)
     for it in loaderVersionIndex:
-        mavenUrl = get_maven_url(it["maven"], "https://maven.quiltmc.org/", ".json")
+        mavenUrl = get_maven_url(it["maven"], "https://maven.quiltmc.org/repository/release", ".json")
         get_json_file("upstream/quilt/loader-installer-json/" + it["version"] + ".json", mavenUrl)
