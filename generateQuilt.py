@@ -81,7 +81,7 @@ for version in loaderVersions:
 
 sharedData = MultiMCSharedPackageData(uid = 'org.quiltmc.quilt-loader', name = 'Quilt Loader')
 sharedData.recommended = loaderRecommended
-sharedData.description = "Quilt Loader is a tool to load Fabric- and Quilt-compatible mods in game environments."
+sharedData.description = "Quilt Loader is a tool to load Quilt-compatible mods in game environments."
 sharedData.projectUrl = "https://quiltmc.org"
 sharedData.authors = ["Quilt Developers"]
 sharedData.write()
