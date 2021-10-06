@@ -15,21 +15,18 @@ def mkdirs(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-mkdirs("multimc/net.fabricmc.fabric-loader")
-mkdirs("multimc/net.fabricmc.intermediary")
-
-def loadJarInfo(mavenKey):
-    with open("upstream/fabric/jars/" + mavenKey.replace(":", ".") + ".json", 'r', encoding='utf-8') as jarInfoFile:
+def loadJarInfo(mavenKey, variantName):
+    with open(f"upstream/{variantName}/jars/" + mavenKey.replace(":", ".") + ".json", 'r', encoding='utf-8') as jarInfoFile:
         return FabricJarInfo(json.load(jarInfoFile))
 
-def processLoaderVersion(loaderVersion, it, loaderData):
+def processLoaderVersion(loaderVersion, it, loaderData, variantName, variant):
     verStable = isFabricVerStable(loaderVersion)
     if (len(loaderRecommended) < 1) and verStable:
         loaderRecommended.append(loaderVersion)
-    versionJarInfo = loadJarInfo(it["maven"])
-    version = MultiMCVersionFile(name="Fabric Loader", uid="net.fabricmc.fabric-loader", version=loaderVersion)
+    versionJarInfo = loadJarInfo(it["maven"], variantName)
+    version = MultiMCVersionFile(name=variant["name"], uid=variant["loader_uid"], version=loaderVersion)
     version.releaseTime = versionJarInfo.releaseTime
-    version.requires = [DependencyEntry(uid='net.fabricmc.intermediary')]
+    version.requires = [DependencyEntry(uid=variant["intermediary_uid"])]
     version.order = 10
     if verStable:
         version.type = "release"
@@ -42,58 +39,82 @@ def processLoaderVersion(loaderVersion, it, loaderData):
     version.libraries = []
     version.libraries.extend(loaderData.libraries.common)
     version.libraries.extend(loaderData.libraries.client)
-    loaderLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.fabricmc.net")
+    loaderLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url=variant["maven"])
     version.libraries.append(loaderLib)
     loaderVersions.append(version)
 
-def processIntermediaryVersion(it):
+def processIntermediaryVersion(it, variantName, variant):
     intermediaryRecommended.append(it["version"])
-    versionJarInfo = loadJarInfo(it["maven"])
-    version = MultiMCVersionFile(name="Intermediary Mappings", uid="net.fabricmc.intermediary", version=it["version"])
+    versionJarInfo = loadJarInfo(it["maven"], variantName)
+    version = MultiMCVersionFile(name="Intermediary Mappings", uid=variant["intermediary_uid"], version=it["version"])
     version.releaseTime = versionJarInfo.releaseTime
     version.requires = [DependencyEntry(uid='net.minecraft', equals=it["version"])]
     version.order = 11
     version.type = "release"
     version.libraries = []
     version.volatile = True
-    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.fabricmc.net")
+    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url=variant["maven"])
     version.libraries.append(mappingLib)
     intermediaryVersions.append(version)
 
-with open("upstream/fabric/meta-v2/loader.json", 'r', encoding='utf-8') as loaderVersionIndexFile:
-    loaderVersionIndex = json.load(loaderVersionIndexFile)
-    for it in loaderVersionIndex:
-        version = it["version"]
-        with open("upstream/fabric/loader-installer-json/" + version + ".json", 'r', encoding='utf-8') as loaderVersionFile:
-            ldata = json.load(loaderVersionFile)
-            ldata = FabricInstallerDataV1(ldata)
-            processLoaderVersion(version, it, ldata)
+for variantName, variant in variants.items():
+    print(f"--- {variantName} ---")
 
-with open("upstream/fabric/meta-v2/intermediary.json", 'r', encoding='utf-8') as intermediaryVersionIndexFile:
-    intermediaryVersionIndex = json.load(intermediaryVersionIndexFile)
-    for it in intermediaryVersionIndex:
-        processIntermediaryVersion(it)
+    loaderRecommended.clear()
+    loaderVersions.clear()
+    intermediaryRecommended.clear()
+    intermediaryVersions.clear()
 
-for version in loaderVersions:
-    outFilepath = "multimc/net.fabricmc.fabric-loader/%s.json" % version.version
-    with open(outFilepath, 'w') as outfile:
-        json.dump(version.to_json(), outfile, sort_keys=True, indent=4)
+    mkdirs(f"multimc/{variant['loader_uid']}")
+    mkdirs(f"multimc/{variant['intermediary_uid']}")
 
-sharedData = MultiMCSharedPackageData(uid = 'net.fabricmc.fabric-loader', name = 'Fabric Loader')
-sharedData.recommended = loaderRecommended
-sharedData.description = "Fabric Loader is a tool to load Fabric-compatible mods in game environments."
-sharedData.projectUrl = "https://fabricmc.net"
-sharedData.authors = ["Fabric Developers"]
-sharedData.write()
+    print("Processing loader versions...")
+    with open(f"upstream/{variantName}/meta-v2/loader.json", 'r', encoding='utf-8') as loaderVersionIndexFile:
+        loaderVersionIndex = json.load(loaderVersionIndexFile)
+        for it in loaderVersionIndex:
+            if "name" in it and it["name"] in variant["exclude"]:
+                continue
 
-for version in intermediaryVersions:
-    outFilepath = "multimc/net.fabricmc.intermediary/%s.json" % version.version
-    with open(outFilepath, 'w') as outfile:
-        json.dump(version.to_json(), outfile, sort_keys=True, indent=4)
+            version = it["version"]
+            print(f"Processing {version}...")
+            with open(f"upstream/{variantName}/loader-installer-json/" + version + ".json", 'r', encoding='utf-8') as loaderVersionFile:
+                ldata = json.load(loaderVersionFile)
+                ldata = FabricInstallerDataV1(ldata)
+                processLoaderVersion(version, it, ldata, variantName, variant)
 
-sharedData = MultiMCSharedPackageData(uid = 'net.fabricmc.intermediary', name = 'Intermediary Mappings')
-sharedData.recommended = intermediaryRecommended
-sharedData.description = "Intermediary mappings allow using Fabric Loader with mods for Minecraft in a more compatible manner."
-sharedData.projectUrl = "https://fabricmc.net"
-sharedData.authors = ["Fabric Developers"]
-sharedData.write()
+    print("Processing Intermediary versions...")
+    with open(f"upstream/{variantName}/meta-v2/intermediary.json", 'r', encoding='utf-8') as intermediaryVersionIndexFile:
+        intermediaryVersionIndex = json.load(intermediaryVersionIndexFile)
+        for it in intermediaryVersionIndex:
+            print(f"Processing {it['version']}...")
+            processIntermediaryVersion(it, variantName, variant)
+
+    print("Writing loader versions...")
+    for version in loaderVersions:
+        print(f"Writing {version.version}...")
+        outFilepath = f"multimc/{variant['loader_uid']}/%s.json" % version.version
+        with open(outFilepath, 'w') as outfile:
+            json.dump(version.to_json(), outfile, sort_keys=True, indent=4)
+
+    print("Writing shared loader data...")
+    sharedData = MultiMCSharedPackageData(uid = variant["loader_uid"], name = variant["name"])
+    sharedData.recommended = loaderRecommended
+    sharedData.description = variant["description"]
+    sharedData.projectUrl = variant["url"]
+    sharedData.authors = variant["authors"]
+    sharedData.write()
+
+    print("Writing Intermediary versions...")
+    for version in intermediaryVersions:
+        print(f"Writing {version.version}...")
+        outFilepath = f"multimc/{variant['intermediary_uid']}/%s.json" % version.version
+        with open(outFilepath, 'w') as outfile:
+            json.dump(version.to_json(), outfile, sort_keys=True, indent=4)
+
+    print("Writing shared Intermediary data...")
+    sharedData = MultiMCSharedPackageData(uid = variant["intermediary_uid"], name = 'Intermediary Mappings')
+    sharedData.recommended = intermediaryRecommended
+    sharedData.description = "Intermediary mappings allow using Fabric Loader with mods for Minecraft in a more compatible manner."
+    sharedData.projectUrl = variant["url"]
+    sharedData.authors = variant["authors"]
+    sharedData.write()

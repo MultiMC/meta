@@ -1,6 +1,31 @@
 from metautil import *
 import jsonobject
 
+variants = {
+    "fabric": {
+        "name": "Fabric Loader",
+        "description": "Fabric Loader is a tool to load Fabric-compatible mods in game environments.",
+        "url": "https://fabricmc.net",
+        "authors": ["Fabric Developers"],
+        "meta": "https://meta.fabricmc.net",
+        "maven": "https://maven.fabricmc.net",
+        "loader_uid": "net.fabricmc.fabric-loader",
+        "intermediary_uid": "net.fabricmc.intermediary",
+        "exclude": [],
+    },
+    "legacy-fabric": {
+        "name": "Fabric Loader 1.8.9",
+        "description": "Fabric Loader for 1.8.9 and below.",
+        "url": "https://legacyfabric.net",
+        "authors": ["Legacy Fabric Developers"],
+        "meta": "https://meta.legacyfabric.net",
+        "maven": "https://maven.legacyfabric.net",
+        "loader_uid": "net.legacyfabric.fabric-loader-189",
+        "intermediary_uid": "net.legacyfabric.intermediary",
+        "exclude": ["fabric-loader"],
+    },
+}
+
 # barebones semver-like parser
 def isFabricVerStable(ver):
     s = ver.split("+")
