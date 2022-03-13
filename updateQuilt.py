@@ -67,7 +67,8 @@ mkdirs("upstream/quilt/loader-installer-json")
 mkdirs("upstream/quilt/jars")
 
 # get the version list for each component we are interested in
-for component in ["intermediary", "loader"]:
+#for component in ["intermediary", "loader"]:
+for component in ["loader"]:
     index = get_json_file("upstream/quilt/meta-v3/" + component + ".json", "https://meta.quiltmc.org/v3/versions/" + component)
     for it in index:
         jarMavenUrl = get_maven_url(it["maven"], "https://maven.quiltmc.org/repository/release/", ".jar")

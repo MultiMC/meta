@@ -11,9 +11,6 @@ class QuiltInstallerArguments(JsonObject):
     common = ListProperty(StringProperty)
     server = ListProperty(StringProperty)
 
-class QuiltInstallerLaunchwrapper(JsonObject):
-    tweakers = ObjectProperty(QuiltInstallerArguments, required=True)
-
 class QuiltInstallerLibraries(JsonObject):
     client = ListProperty(MultiMCLibrary)
     common = ListProperty(MultiMCLibrary)
@@ -24,7 +21,6 @@ class QuiltInstallerDataV1(JsonObject):
     libraries = ObjectProperty(QuiltInstallerLibraries, required=True)
     mainClass = jsonobject.DefaultProperty()
     arguments = ObjectProperty(QuiltInstallerArguments, required=False)
-    launchwrapper = ObjectProperty(QuiltInstallerLaunchwrapper, required=False)
 
 class QuiltJarInfo(JsonObject):
     releaseTime = ISOTimestampProperty()
