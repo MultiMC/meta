@@ -75,7 +75,7 @@ if [ "${DEPLOY_TO_GIT}" = true ] ; then
     git add index.json org.lwjgl/* net.minecraft/* || fail_out
     git add net.minecraftforge/* || fail_out
     git add net.fabricmc.fabric-loader/* net.fabricmc.intermediary/* || fail_out
-    git add org.quiltmc.fabric-loader/* org.quiltmc.intermediary/* || fail_out
+    git add org.quiltmc.quilt-loader/* || fail_out
     git add com.mumfrey.liteloader/* || fail_out
     if [ -d "org.lwjgl3" ]; then
         git add org.lwjgl3/* || fail_out
