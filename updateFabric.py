@@ -66,12 +66,22 @@ mkdirs("upstream/fabric/meta-v2")
 mkdirs("upstream/fabric/loader-installer-json")
 mkdirs("upstream/fabric/jars")
 
+mkdirs("upstream/fabric-legacy/meta-v2")
+mkdirs("upstream/fabric-legacy/jars")
+
 # get the version list for each component we are interested in
 for component in ["intermediary", "loader"]:
     index = get_json_file("upstream/fabric/meta-v2/" + component + ".json", "https://meta.fabricmc.net/v2/versions/" + component)
     for it in index:
         jarMavenUrl = get_maven_url(it["maven"], "https://maven.fabricmc.net/", ".jar")
         compute_jar_file("upstream/fabric/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
+
+# get Legacy Fabric intermediary list
+for component in ["intermediary"]:
+    index = get_json_file("upstream/fabric-legacy/meta-v2/" + component + ".json", "https://meta.legacyfabric.net/v2/versions/" + component)
+    for it in index:
+        jarMavenUrl = get_maven_url(it["maven"], "https://meta.legacyfabric.net/", ".jar")
+        compute_jar_file("upstream/fabric-legacy/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
 
 # for each loader, download installer JSON file from maven
 with open("upstream/fabric/meta-v2/loader.json", 'r', encoding='utf-8') as loaderVersionIndexFile:

@@ -43,7 +43,7 @@ def processLoaderVersion(loaderVersion, it, loaderData):
     version.libraries.append(loaderLib)
     loaderVersions.append(version)
 
-def processIntermediaryVersion(it):
+def processIntermediaryVersion(it, maven):
     intermediaryRecommended.append(it["version"])
     versionJarInfo = loadJarInfo(it["maven"])
     version = MultiMCVersionFile(name="Intermediary Mappings", uid="net.fabricmc.intermediary", version=it["version"])
@@ -53,7 +53,7 @@ def processIntermediaryVersion(it):
     version.type = "release"
     version.libraries = []
     version.volatile = True
-    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.fabricmc.net")
+    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url=maven)
     version.libraries.append(mappingLib)
     intermediaryVersions.append(version)
 
@@ -69,7 +69,12 @@ with open("upstream/fabric/meta-v2/loader.json", 'r', encoding='utf-8') as loade
 with open("upstream/fabric/meta-v2/intermediary.json", 'r', encoding='utf-8') as intermediaryVersionIndexFile:
     intermediaryVersionIndex = json.load(intermediaryVersionIndexFile)
     for it in intermediaryVersionIndex:
-        processIntermediaryVersion(it)
+        processIntermediaryVersion(it, "https://maven.fabricmc.net")
+
+with open("upstream/fabric-legacy/meta-v2/intermediary.json", 'r', encoding='utf-8') as intermediaryVersionIndexFile:
+    intermediaryVersionIndex = json.load(intermediaryVersionIndexFile)
+    for it in intermediaryVersionIndex:
+        processIntermediaryVersion(it, "https://maven.legacyfabric.net")
 
 for version in loaderVersions:
     outFilepath = "multimc/net.fabricmc.fabric-loader/%s.json" % version.version
