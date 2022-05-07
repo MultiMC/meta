@@ -18,18 +18,21 @@ def mkdirs(path):
 mkdirs("multimc/net.fabricmc.fabric-loader")
 mkdirs("multimc/net.fabricmc.intermediary")
 
+mkdirs("multimc/net.legacyfabric.fabric-loader")
+mkdirs("multimc/net.legacyfabric.intermediary")
+
 def loadJarInfo(mavenKey):
     with open("upstream/fabric/jars/" + mavenKey.replace(":", ".") + ".json", 'r', encoding='utf-8') as jarInfoFile:
         return FabricJarInfo(json.load(jarInfoFile))
 
-def processLoaderVersion(loaderVersion, it, loaderData):
+def processLoaderVersion(loaderVersion, it, loaderData, kind):
     verStable = it["stable"]
     if (len(loaderRecommended) < 1) and verStable:
         loaderRecommended.append(loaderVersion)
     versionJarInfo = loadJarInfo(it["maven"])
-    version = MultiMCVersionFile(name="Fabric Loader", uid="net.fabricmc.fabric-loader", version=loaderVersion)
+    version = MultiMCVersionFile(name="Fabric Loader", uid="net." + kind + ".fabric-loader", version=loaderVersion)
     version.releaseTime = versionJarInfo.releaseTime
-    version.requires = [DependencyEntry(uid='net.fabricmc.intermediary')]
+    version.requires = [DependencyEntry(uid='net." + kind " .intermediary')]
     version.order = 10
     version.type = "release"
     if isinstance(loaderData.mainClass, dict):
@@ -43,17 +46,17 @@ def processLoaderVersion(loaderVersion, it, loaderData):
     version.libraries.append(loaderLib)
     loaderVersions.append(version)
 
-def processIntermediaryVersion(it, maven):
+def processIntermediaryVersion(it, kind):
     intermediaryRecommended.append(it["version"])
     versionJarInfo = loadJarInfo(it["maven"])
-    version = MultiMCVersionFile(name="Intermediary Mappings", uid="net.fabricmc.intermediary", version=it["version"])
+    version = MultiMCVersionFile(name="Intermediary Mappings", uid="net." + kind + ".intermediary", version=it["version"])
     version.releaseTime = versionJarInfo.releaseTime
     version.requires = [DependencyEntry(uid='net.minecraft', equals=it["version"])]
     version.order = 11
     version.type = "release"
     version.libraries = []
     version.volatile = True
-    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url=maven)
+    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven." + kind + ".net/")
     version.libraries.append(mappingLib)
     intermediaryVersions.append(version)
 
