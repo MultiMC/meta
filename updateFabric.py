@@ -77,7 +77,7 @@ for component in ["intermediary", "loader"]:
         compute_jar_file("upstream/fabric/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
 
 # get Legacy Fabric intermediary list
-for component in ["intermediary"]:
+for component in ["intermediary", "loader"]:
     index = get_json_file("upstream/fabric-legacy/meta-v2/" + component + ".json", "https://meta.legacyfabric.net/v2/versions/" + component)
     for it in index:
         jarMavenUrl = get_maven_url(it["maven"], "https://meta.legacyfabric.net/", ".jar")
