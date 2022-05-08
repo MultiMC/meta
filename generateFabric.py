@@ -49,6 +49,10 @@ def processLoaderVersion(loaderVersion, it, loaderData, kind):
     version.libraries = []
     version.libraries.extend(loaderData.libraries.common)
     version.libraries.extend(loaderData.libraries.client)
+
+    if "legacy" in kind:
+            version.addTraits = ["noapplet"]
+
     loaderLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.fabricmc.net")
     version.libraries.append(loaderLib)
     loaderVersions[kind].append(version)
