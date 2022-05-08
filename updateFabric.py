@@ -62,27 +62,21 @@ def compute_jar_file(path, url):
     with open(path + ".json", 'w') as outfile:
         json.dump(data.to_json(), outfile, sort_keys=True, indent=4)
 
-mkdirs("upstream/fabric/meta-v2")
+for kind in ["fabricmc", "legacy-fabric"]:
+    i = kind.replace("mc", "")
+    j = kind.replace("-", "")
+
+    mkdirs("upstream/" + i + "/meta-v2")
+    mkdirs("upstream/" + i + "/jars")
+
+    # get the version list for each component we are interested in
+    for component in ["intermediary", "loader"]:
+        index = get_json_file("upstream/" + i + "/meta-v2/" + component + ".json", "https://meta." + j + ".net/v2/versions/" + component)
+        for it in index:
+            jarMavenUrl = get_maven_url(it["maven"], "https://maven." + j + ".net/", ".jar")
+            compute_jar_file("upstream/" + i + "/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
+
 mkdirs("upstream/fabric/loader-installer-json")
-mkdirs("upstream/fabric/jars")
-
-mkdirs("upstream/legacy-fabric/meta-v2")
-mkdirs("upstream/legacy-fabric/jars")
-
-# get the version list for each component we are interested in
-for component in ["intermediary", "loader"]:
-    index = get_json_file("upstream/fabric/meta-v2/" + component + ".json", "https://meta.fabricmc.net/v2/versions/" + component)
-    for it in index:
-        jarMavenUrl = get_maven_url(it["maven"], "https://maven.fabricmc.net/", ".jar")
-        compute_jar_file("upstream/fabric/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
-
-# get Legacy Fabric intermediary list
-for component in ["intermediary", "loader"]:
-    index = get_json_file("upstream/legacy-fabric/meta-v2/" + component + ".json", "https://meta.legacyfabric.net/v2/versions/" + component)
-    for it in index:
-        jarMavenUrl = get_maven_url(it["maven"], "https://meta.legacyfabric.net/", ".jar")
-        compute_jar_file("upstream/legacy-fabric/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
-
 # for each loader, download installer JSON file from maven
 with open("upstream/fabric/meta-v2/loader.json", 'r', encoding='utf-8') as loaderVersionIndexFile:
     loaderVersionIndex = json.load(loaderVersionIndexFile)
