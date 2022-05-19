@@ -324,6 +324,7 @@ badVariants = [
     "eaeeca768920d981bdc8ea698305f4e9723c6ba8", # 3.2.2 - missing osx natives
     "8a85feb57480e9cbb0b9c54e7b1751816122cf97", # 3.2.2 - missing other osx natives
     "65d4ba873bc1244fda9fd7fabd5f6d917316a4e8", # 3.2.2 - introduced in 21w42a, missing jinput and jutils
+    "2bc9e4c3a40dbde9f1eafa17592e2d9a2c71cc20", # 3.2.2 - whatever mad thing that happened recently
 ]
 
 # Add our own 3.2.2, with hookers and blackjack.
