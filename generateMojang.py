@@ -96,17 +96,17 @@ def adaptNewStyleArguments(arguments):
             pprint(arg)
     return ' '.join(outarr)
 
-def isOnlyMacOS(rules, specifier):
-    allowsOSX = False
+def isOnlyOS(rules, specifier, osName):
+    allowsOS = False
     allowsAll = False
     #print("Considering", specifier, "rules", rules)
     if rules:
         for rule in rules:
-            if rule.action == "allow" and rule.os and rule.os.name == "osx":
-                allowsOSX = True
+            if rule.action == "allow" and rule.os and rule.os.name == osName:
+                allowsOS = True
             if rule.action == "allow" and not rule.os:
                 allowsAll = True
-        if allowsOSX and not allowsAll:
+        if allowsOS and not allowsAll:
             return True
     return False
 
@@ -136,8 +136,14 @@ for filename in os.listdir('upstream/mojang/versions'):
                 if mmcLib.rules:
                     rules = mmcLib.rules
                     mmcLib.rules = None
-                if isOnlyMacOS(rules, specifier):
+                if isOnlyOS(rules, specifier, "osx"):
                     print("Candidate library ",  specifier, " is only for macOS and is therefore ignored.")
+                    continue
+                if isOnlyOS(rules, specifier, "windows"):
+                    print("Candidate library ",  specifier, " is only for Windows and is therefore ignored.")
+                    continue
+                if isOnlyOS(rules, specifier, "linux"):
+                    print("Candidate library ",  specifier, " is only for Linux and is therefore ignored.")
                     continue
                 bucket = addOrGetBucket(buckets, rules)
                 if specifier.group == "org.lwjgl.lwjgl" and specifier.artifact == "lwjgl":
