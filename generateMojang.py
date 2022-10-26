@@ -159,37 +159,40 @@ for filename in os.listdir('upstream/mojang/versions'):
             else:
                 # FIXME: workaround for insane log4j nonsense from December 2021. Probably needs adjustment.
                 if mmcLib.name.isLog4j():
-                    log4jVersion = '2.16.0'
-                    if mmcLib.name.version == '2.0-beta9':
-                        log4jVersion = '2.0-beta9-fixed'
+                    if mmcLib.name.version in ["2.16.0", "2.17.0", "2.18.0", "2.19.0"]:
+                        libs_minecraft.append(mmcLib)
+                    else:
+                        log4jVersion = '2.16.0'
+                        if mmcLib.name.version == '2.0-beta9':
+                            log4jVersion = '2.0-beta9-fixed'
 
-                    replacementLib = MultiMCLibrary(name=GradleSpecifier("org.apache.logging.log4j:%s:%s" % (mmcLib.name.artifact, log4jVersion)))
-                    replacementLib.downloads = MojangLibraryDownloads()
-                    replacementLib.downloads.artifact = MojangArtifact()
-                    replacementLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (replacementLib.name.getPath())
+                        replacementLib = MultiMCLibrary(name=GradleSpecifier("org.apache.logging.log4j:%s:%s" % (mmcLib.name.artifact, log4jVersion)))
+                        replacementLib.downloads = MojangLibraryDownloads()
+                        replacementLib.downloads.artifact = MojangArtifact()
+                        replacementLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (replacementLib.name.getPath())
 
-                    if log4jVersion == "2.16.0":
-                        if mmcLib.name.artifact == "log4j-api":
-                            replacementLib.downloads.artifact.sha1 = "f821a18687126c2e2f227038f540e7953ad2cc8c"
-                            replacementLib.downloads.artifact.size = 301892
-                        elif mmcLib.name.artifact == "log4j-core":
-                            replacementLib.downloads.artifact.sha1 = "539a445388aee52108700f26d9644989e7916e7c"
-                            replacementLib.downloads.artifact.size = 1789565
-                        elif mmcLib.name.artifact == "log4j-slf4j18-impl":
-                            replacementLib.downloads.artifact.sha1 = "0c880a059056df5725f5d8d1035276d9749eba6d"
-                            replacementLib.downloads.artifact.size = 21249
-                        else:
-                            raise Exception("ERROR: unhandled log4j artifact %s!" % mmcLib.name.artifact)
-                    elif log4jVersion == "2.0-beta9-fixed":
-                        if mmcLib.name.artifact == "log4j-api":
-                            replacementLib.downloads.artifact.sha1 = "b61eaf2e64d8b0277e188262a8b771bbfa1502b3"
-                            replacementLib.downloads.artifact.size = 107347
-                        elif mmcLib.name.artifact == "log4j-core":
-                            replacementLib.downloads.artifact.sha1 = "677991ea2d7426f76309a73739cecf609679492c"
-                            replacementLib.downloads.artifact.size = 677588
-                        else:
-                            raise Exception("ERROR: unhandled log4j artifact %s!" % mmcLib.name.artifact)
-                    libs_minecraft.append(replacementLib)
+                        if log4jVersion == "2.16.0":
+                            if mmcLib.name.artifact == "log4j-api":
+                                replacementLib.downloads.artifact.sha1 = "f821a18687126c2e2f227038f540e7953ad2cc8c"
+                                replacementLib.downloads.artifact.size = 301892
+                            elif mmcLib.name.artifact == "log4j-core":
+                                replacementLib.downloads.artifact.sha1 = "539a445388aee52108700f26d9644989e7916e7c"
+                                replacementLib.downloads.artifact.size = 1789565
+                            elif mmcLib.name.artifact == "log4j-slf4j18-impl":
+                                replacementLib.downloads.artifact.sha1 = "0c880a059056df5725f5d8d1035276d9749eba6d"
+                                replacementLib.downloads.artifact.size = 21249
+                            else:
+                                raise Exception("ERROR: unhandled log4j artifact %s!" % mmcLib.name.artifact)
+                        elif log4jVersion == "2.0-beta9-fixed":
+                            if mmcLib.name.artifact == "log4j-api":
+                                replacementLib.downloads.artifact.sha1 = "b61eaf2e64d8b0277e188262a8b771bbfa1502b3"
+                                replacementLib.downloads.artifact.size = 107347
+                            elif mmcLib.name.artifact == "log4j-core":
+                                replacementLib.downloads.artifact.sha1 = "677991ea2d7426f76309a73739cecf609679492c"
+                                replacementLib.downloads.artifact.size = 677588
+                            else:
+                                raise Exception("ERROR: unhandled log4j artifact %s!" % mmcLib.name.artifact)
+                        libs_minecraft.append(replacementLib)
                 else:
                     libs_minecraft.append(mmcLib)
         if len(buckets) == 1:
