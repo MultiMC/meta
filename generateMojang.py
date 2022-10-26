@@ -12,7 +12,7 @@ from pprint import pprint
 
 from metautil import *
 
-from distutils import version
+from pkg_resources import parse_version
 
 from collections import defaultdict
 from collections import namedtuple
@@ -159,7 +159,7 @@ for filename in os.listdir('upstream/mojang/versions'):
             else:
                 # FIXME: workaround for insane log4j nonsense from December 2021. Probably needs adjustment.
                 if mmcLib.name.isLog4j():
-                    if mmcLib.name.version in ["2.16.0", "2.17.0", "2.18.0", "2.19.0"]:
+                    if parse_version(mmcLib.name.version) >= parse_version("2.16.0"):
                         libs_minecraft.append(mmcLib)
                     else:
                         log4jVersion = '2.16.0'
