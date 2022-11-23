@@ -57,6 +57,7 @@ class MojangLibrary (JsonObject):
 class MultiMCLibrary (MojangLibrary):
     url = StringProperty(exclude_if_none=True, default=None)
     mmcHint = StringProperty(name="MMC-hint", exclude_if_none=True, default=None)
+    mmcAbsoluteURL = StringProperty(name="MMC-absoluteUrl", exclude_if_none=True, default=None)
 
 
 def GetLibraryDownload (library : MultiMCLibrary):

@@ -244,6 +244,7 @@ def validateSupportedMultiMCVersion(version):
 class MultiMCLibrary (MojangLibrary):
     url = StringProperty(exclude_if_none=True, default=None)
     mmcHint = StringProperty(name="MMC-hint", exclude_if_none=True, default=None)
+    mmcAbsoluteURL = StringProperty(name="MMC-absoluteUrl", exclude_if_none=True, default=None)
 
 class VersionedJsonObject(JsonObject):
     formatVersion = IntegerProperty(default=CurrentMultiMCFormatVersion, validators=validateSupportedMultiMCVersion)
