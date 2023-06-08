@@ -185,11 +185,10 @@ def versionFromBuildSystemInstaller(installerVersion : MojangVersionFile, instal
         installerInfo = InstallerInfo(json.load(f))
         InstallerLib = MultiMCLibrary(name=GradleSpecifier("net.minecraftforge:forge:%s:installer" % (version.longVersion)))
         InstallerLib.downloads = MojangLibraryDownloads()
-        InstallerLib.mmcAbsoluteURL = "https://files.minecraftforge.net/maven/%s" % (InstallerLib.name.getPath())
-        # InstallerLib.downloads.artifact = MojangArtifact()
-        # InstallerLib.downloads.artifact.url = "https://files.minecraftforge.net/maven/%s" % (InstallerLib.name.getPath())
-        # InstallerLib.downloads.artifact.sha1 = installerInfo.sha1hash
-        # InstallerLib.downloads.artifact.size = installerInfo.size
+        InstallerLib.downloads.artifact = MojangArtifact()
+        InstallerLib.downloads.artifact.url = "https://files.minecraftforge.net/maven/%s" % (InstallerLib.name.getPath())
+        InstallerLib.downloads.artifact.sha1 = installerInfo.sha1hash
+        InstallerLib.downloads.artifact.size = installerInfo.size
         mavenLibs.append(InstallerLib)
 
     for upstreamLib in installerProfile.libraries:
