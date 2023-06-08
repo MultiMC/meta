@@ -311,9 +311,9 @@ passVariants = [
     "569845af361b8cd54de7153c142053425944da57", # 2.9.1-nightly-20131120
     "838930186ce1f4222f71b737ee17725d0fd14e5a", # 2.9.3
     "079b297aa801e551cc96b5e06c44e4a921807c8a", # 2.9.4-nightly-20150209
-    "446142ccdcb27eca829be79702d6ff53420198a9", # 3.1.2
-    "48c276ed559a4b7ca680770b110b9b60d0b2a3b9", # 3.1.6
-    "4f9e33a93e5974e2ec433134983c110b3959aa31", # 3.2.1
+    "ac1d55d1e61bab404746f2a5a46baf8aac2a6c04", # 3.1.2
+    "30e698945af19139b38cb6d15b8fbd52df492df6", # 3.1.6
+    "399028b2274897c0c0b15a1ae48882e29b47111a", # 3.2.1
     "15d5562e9a3d11edec17c8e2de084a96fe9f371d", # 3.2.2 - our fixed version
     "b17498f09fd1fc3343d4652305268493331f81c4", # 3.3.1
 ]
@@ -323,8 +323,10 @@ badVariants = [
     "859f5679c60fce520a7c8cfe0c5663f848ff51ab", # 2.9.0 - broken natives
     "7811cd3ba93467842b1823ca8e571f3d49421291", # 3.1.6
     "194e5109cbdfb8d5a7da918c449b7414cd609629", # 3.2.1
+    "18cd83db93dda6e452775962a5590486d54c505d", # 3.2.1 - missing linux natives
     "74f2ae137e9767f0cfbe10ca9db38adaba08a4a6", # 3.2.2 - missing tinyfd
     "eaeeca768920d981bdc8ea698305f4e9723c6ba8", # 3.2.2 - missing osx natives
+    "80104df786febbb139bf456d820494de3d594d94", # 3.2.2 - also missing osx natives
     "8a85feb57480e9cbb0b9c54e7b1751816122cf97", # 3.2.2 - missing other osx natives
     "65d4ba873bc1244fda9fd7fabd5f6d917316a4e8", # 3.2.2 - introduced in 21w42a, missing jinput and jutils
     "2bc9e4c3a40dbde9f1eafa17592e2d9a2c71cc20", # 3.2.2 - whatever mad thing that happened recently
