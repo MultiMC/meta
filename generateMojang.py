@@ -316,6 +316,7 @@ passVariants = [
     "399028b2274897c0c0b15a1ae48882e29b47111a", # 3.2.1
     "15d5562e9a3d11edec17c8e2de084a96fe9f371d", # 3.2.2 - our fixed version
     "b17498f09fd1fc3343d4652305268493331f81c4", # 3.3.1
+    "58e00b34f23452d1d401df9671d66f3b7c375b9e", # 3.3.2
 ]
 
 badVariants = [
