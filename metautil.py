@@ -6,6 +6,7 @@ import iso8601
 
 class ISOTimestampProperty(AbstractDateProperty):
 
+
     _type = datetime.datetime
 
     def _wrap(self, value):
