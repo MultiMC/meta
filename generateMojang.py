@@ -260,6 +260,7 @@ def processVersionWithSerparateLWJGL(versionFile):
 def processVersionWithMergedLWJGL(versionFile):
     filenameOut = "multimc/net.minecraft/%s.json" % versionFile.version
     versionFile.addTraits.append("FirstThreadOnMacOS")
+    versionFile.minecraftArguments = adaptNewStyleArguments(mojangVersionFile.arguments)
     with open(filenameOut, 'w') as outfile:
         json.dump(versionFile.to_json(), outfile, sort_keys=True, indent=4)
 
