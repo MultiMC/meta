@@ -39,10 +39,10 @@ git checkout ${BRANCH} || exit 1
 cd "${BASEDIR}"
 
 ./updateMojang.py || fail_in
-#./updateForge.py || fail_in
+./updateForge.py || fail_in
 ./updateFabric.py || fail_in
-#./updateQuilt.py || fail_in
-#./updateLiteloader.py || fail_in
+./updateQuilt.py || fail_in
+./updateLiteloader.py || fail_in
 
 if [ "${DEPLOY_TO_GIT}" = true ] ; then
     cd "${BASEDIR}/${UPSTREAM_DIR}"
@@ -64,10 +64,10 @@ git checkout ${BRANCH} || exit 1
 cd "${BASEDIR}"
 
 ./generateMojang.py || fail_out
-#./generateForge.py || fail_out
+./generateForge.py || fail_out
 ./generateFabric.py || fail_out
-#./generateQuilt.py || fail_out
-#./generateLiteloader.py || fail_out
+./generateQuilt.py || fail_out
+./generateLiteloader.py || fail_out
 ./index.py || fail_out
 
 if [ "${DEPLOY_TO_GIT}" = true ] ; then
