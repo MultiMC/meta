@@ -22,7 +22,7 @@ def loadJarInfo(mavenKey):
     with open("upstream/fabric/jars/" + mavenKey.replace(":", ".") + ".json", 'r', encoding='utf-8') as jarInfoFile:
         return FabricJarInfo(json.load(jarInfoFile))
 
-def processLoaderVersion(loaderVersion, it, loaderData):
+def processLoaderVersion(loaderVersion, it, loaderData, metadataVersion):
     verStable = it["stable"]
     if (len(loaderRecommended) < 1) and verStable:
         loaderRecommended.append(loaderVersion)
@@ -37,8 +37,16 @@ def processLoaderVersion(loaderVersion, it, loaderData):
     else:
         version.mainClass = loaderData.mainClass
     version.libraries = []
-    version.libraries.extend(loaderData.libraries.common)
-    version.libraries.extend(loaderData.libraries.client)
+    
+    if metadataVersion == 1:
+        version.libraries.extend(loaderData.libraries.common)
+        version.libraries.extend(loaderData.libraries.client)
+    else:
+        if len(loaderData.libraries.common) > 0:
+            version.libraries.extend(map(FabricLibraryV2.toMmcLibrary, loaderData.libraries.common))
+        if len(loaderData.libraries.client) > 0:
+            version.libraries.extend(map(FabricLibraryV2.toMmcLibrary, loaderData.libraries.client))
+
     loaderLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.fabricmc.net")
     version.libraries.append(loaderLib)
     loaderVersions.append(version)
@@ -63,8 +71,12 @@ with open("upstream/fabric/meta-v2/loader.json", 'r', encoding='utf-8') as loade
         version = it["version"]
         with open("upstream/fabric/loader-installer-json/" + version + ".json", 'r', encoding='utf-8') as loaderVersionFile:
             ldata = json.load(loaderVersionFile)
-            ldata = FabricInstallerDataV1(ldata)
-            processLoaderVersion(version, it, ldata)
+            metadataVersion = ldata["version"]
+            if metadataVersion == 1:
+                ldata = FabricInstallerDataV1(ldata)
+            else:
+                ldata = FabricInstallerDataV2(ldata)
+            processLoaderVersion(version, it, ldata, metadataVersion)
 
 with open("upstream/fabric/meta-v2/intermediary.json", 'r', encoding='utf-8') as intermediaryVersionIndexFile:
     intermediaryVersionIndex = json.load(intermediaryVersionIndexFile)
