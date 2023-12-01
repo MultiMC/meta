@@ -42,7 +42,7 @@ class FabricLibraryV2(JsonObject):
             mmcHint = None
         )
 
-class FabricInstallerLibrariesV2(FabricInstallerLibrariesV1):
+class FabricInstallerLibrariesV2(JsonObject):
     client = ListProperty(FabricLibraryV2)
     common = ListProperty(FabricLibraryV2)
     server = ListProperty(FabricLibraryV2)
