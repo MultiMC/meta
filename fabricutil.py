@@ -45,6 +45,18 @@ class FabricLibrary (JsonObject):
     sha256 = StringProperty(exclude_if_none=True, default=None)
     sha512 = StringProperty(exclude_if_none=True, default=None)
 
+    def toMmcLibrary(self) -> MultiMCLibrary:
+        return MultiMCLibrary(
+            name = self.name,
+            downloads = MojangLibraryDownloads(
+                artifact = MojangArtifact(
+                    sha1 = self.sha1,
+                    size = self.size,
+                    url = self.url + self.name.getPath(),
+                ),
+            ),
+        )
+
 
 class FabricInstallerLibrariesV2(JsonObject):
     client = ListProperty(FabricLibrary)

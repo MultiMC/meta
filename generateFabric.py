@@ -22,35 +22,8 @@ def loadJarInfo(mavenKey):
     with open("upstream/fabric/jars/" + mavenKey.replace(":", ".") + ".json", 'r', encoding='utf-8') as jarInfoFile:
         return FabricJarInfo(json.load(jarInfoFile))
 
-def toMultiMCLibrary(fabricLibrary):
-    'TODO: maybe we can actually use the sha1 or something...'
-    return MultiMCLibrary(name=fabricLibrary.name, url=fabricLibrary.url)
-
-def processLoaderVersionV1(loaderVersion, it, loaderData):
-    loaderData = FabricInstallerDataV1(loaderData)
-    verStable = it["stable"]
-    if (len(loaderRecommended) < 1) and verStable:
-        loaderRecommended.append(loaderVersion)
-    versionJarInfo = loadJarInfo(it["maven"])
-    version = MultiMCVersionFile(name="Fabric Loader", uid="net.fabricmc.fabric-loader", version=loaderVersion)
-    version.releaseTime = versionJarInfo.releaseTime
-    version.requires = [DependencyEntry(uid='net.fabricmc.intermediary')]
-    version.order = 10
-    version.type = "release"
-    if isinstance(loaderData.mainClass, dict):
-        version.mainClass = loaderData.mainClass["client"]
-    else:
-        version.mainClass = loaderData.mainClass
-    version.libraries = []
-    version.libraries.extend(loaderData.libraries.common)
-    version.libraries.extend(loaderData.libraries.client)
-    loaderLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.fabricmc.net")
-    version.libraries.append(loaderLib)
-    loaderVersions.append(version)
-
-def processLoaderVersionV2(loaderVersion, it, loaderData):
+def processLoaderVersion(loaderVersion, it, loaderData, metadataVersion):
     'TODO: use min_java_version to fill in the equivalent of it in the final file(s) bonce we have that in place'
-    loaderData = FabricInstallerDataV2(loaderData)
     verStable = it["stable"]
     if (len(loaderRecommended) < 1) and verStable:
         loaderRecommended.append(loaderVersion)
@@ -65,9 +38,24 @@ def processLoaderVersionV2(loaderVersion, it, loaderData):
     else:
         version.mainClass = loaderData.mainClass
     version.libraries = []
-    version.libraries.extend(list(map(toMultiMCLibrary, loaderData.libraries.common)))
-    version.libraries.extend(list(map(toMultiMCLibrary, loaderData.libraries.common)))
-    loaderLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.fabricmc.net")
+    if metadataVersion == 1:
+        version.libraries.extend(loaderData.libraries.common)
+        version.libraries.extend(loaderData.libraries.client)
+    elif metadataVersion == 2:
+        version.libraries.extend(list(map(FabricLibrary.toMmcLibrary, loaderData.libraries.common)))
+        version.libraries.extend(list(map(FabricLibrary.toMmcLibrary, loaderData.libraries.client)))
+
+    loaderLibName = GradleSpecifier(it["maven"])
+    loaderLib = MultiMCLibrary(
+        name=loaderLibName,
+        downloads = MojangLibraryDownloads(
+            artifact = MojangArtifact(
+                sha1 = versionJarInfo.sha1,
+                size = versionJarInfo.size,
+                url="https://maven.fabricmc.net/" + loaderLibName.getPath(),
+            ),
+        ),
+    )
     version.libraries.append(loaderLib)
     loaderVersions.append(version)
 
@@ -81,7 +69,17 @@ def processIntermediaryVersion(it):
     version.type = "release"
     version.libraries = []
     version.volatile = True
-    mappingLib = MultiMCLibrary(name=GradleSpecifier(it["maven"]), url="https://maven.fabricmc.net")
+    mappingLibName = GradleSpecifier(it["maven"])
+    mappingLib = MultiMCLibrary(
+        name=mappingLibName,
+        downloads = MojangLibraryDownloads(
+            artifact = MojangArtifact(
+                sha1 = versionJarInfo.sha1,
+                size = versionJarInfo.size,
+                url="https://maven.fabricmc.net/" + mappingLibName.getPath(),
+            ),
+        ),
+    )
     version.libraries.append(mappingLib)
     intermediaryVersions.append(version)
 
@@ -91,13 +89,14 @@ with open("upstream/fabric/meta-v2/loader.json", 'r', encoding='utf-8') as loade
         version = it["version"]
         with open("upstream/fabric/loader-installer-json/" + version + ".json", 'r', encoding='utf-8') as loaderVersionFile:
             ldata = json.load(loaderVersionFile)
-            loaderVersion = ldata['version']
-            if loaderVersion == 1:
-                processLoaderVersionV1(version, it, ldata)
-            elif loaderVersion == 2:
-                processLoaderVersionV2(version, it, ldata)
+            metadataVersion = ldata['version']
+            if metadataVersion == 1:
+                ldata = FabricInstallerDataV1(ldata)
+            elif metadataVersion == 2:
+                ldata = FabricInstallerDataV2(ldata)
             else:
-                raise UnknownVersionException("Unsupported Fabric format version: %d. Max supported is: 2" % (loaderVersion))
+                raise UnknownVersionException("Unsupported Fabric format version: %d. Max supported is: 2" % (metadataVersion))
+            processLoaderVersion(version, it, ldata, metadataVersion)
 
 with open("upstream/fabric/meta-v2/intermediary.json", 'r', encoding='utf-8') as intermediaryVersionIndexFile:
     intermediaryVersionIndex = json.load(intermediaryVersionIndexFile)
