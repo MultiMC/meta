@@ -291,6 +291,8 @@ class ForgeInstallerProfileV2(JsonObject):
     data = DictProperty(DataSpec)
     processors = ListProperty(ProcessorSpec)
     libraries = ListProperty(MojangLibrary)
+    hideExtract = BooleanProperty()
+    serverJarPath = StringProperty()
     mirrorList = StringProperty(exclude_if_none=True, default=None)
     serverJarPath = StringProperty(exclude_if_none=True, default=None)
 
