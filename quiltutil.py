@@ -15,12 +15,14 @@ class QuiltInstallerLibraries(JsonObject):
     client = ListProperty(MultiMCLibrary)
     common = ListProperty(MultiMCLibrary)
     server = ListProperty(MultiMCLibrary)
+    development = ListProperty(MultiMCLibrary, required=False)
 
 class QuiltInstallerDataV1(JsonObject):
     version = IntegerProperty(required=True)
     libraries = ObjectProperty(QuiltInstallerLibraries, required=True)
     mainClass = jsonobject.DefaultProperty()
     arguments = ObjectProperty(QuiltInstallerArguments, required=False)
+    min_java_version = IntegerProperty(required=False)
 
 class QuiltJarInfo(JsonObject):
     releaseTime = ISOTimestampProperty()
