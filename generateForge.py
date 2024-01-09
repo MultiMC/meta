@@ -126,7 +126,7 @@ def versionFromModernizedInstaller(installerVersion : MojangVersionFile, version
                 fixedName = mmcLib.name
                 fixedName.classifier = "universal"
                 mmcLib.downloads.artifact.path = fixedName.getPath()
-                mmcLib.downloads.artifact.url = "https://files.minecraftforge.net/maven/%s" % fixedName.getPath()
+                mmcLib.downloads.artifact.url = "https://maven.minecraftforge.net/%s" % fixedName.getPath()
                 mmcLib.name = fixedName
                 libs.append(mmcLib)
                 continue
@@ -136,7 +136,7 @@ def versionFromModernizedInstaller(installerVersion : MojangVersionFile, version
                 fixedName.classifier = "universal"
                 fixedName.version = "%s-%s" % (mcversion, fixedName.version)
                 mmcLib.downloads.artifact.path = fixedName.getPath()
-                mmcLib.downloads.artifact.url = "https://files.minecraftforge.net/maven/%s" % fixedName.getPath()
+                mmcLib.downloads.artifact.url = "https://maven.minecraftforge.net/%s" % fixedName.getPath()
                 mmcLib.name = fixedName
                 libs.append(mmcLib)
                 continue
@@ -186,7 +186,7 @@ def versionFromBuildSystemInstaller(installerVersion : MojangVersionFile, instal
         InstallerLib = MultiMCLibrary(name=GradleSpecifier("net.minecraftforge:forge:%s:installer" % (version.longVersion)))
         InstallerLib.downloads = MojangLibraryDownloads()
         InstallerLib.downloads.artifact = MojangArtifact()
-        InstallerLib.downloads.artifact.url = "https://files.minecraftforge.net/maven/%s" % (InstallerLib.name.getPath())
+        InstallerLib.downloads.artifact.url = "https://maven.minecraftforge.net/%s" % (InstallerLib.name.getPath())
         InstallerLib.downloads.artifact.sha1 = installerInfo.sha1hash
         InstallerLib.downloads.artifact.size = installerInfo.size
         mavenLibs.append(InstallerLib)
@@ -196,7 +196,7 @@ def versionFromBuildSystemInstaller(installerVersion : MojangVersionFile, instal
         if mmcLib.name.group == "net.minecraftforge":
             if mmcLib.name.artifact == "forge":
                 if mmcLib.name.classifier == "universal":
-                    mmcLib.downloads.artifact.url = "https://files.minecraftforge.net/maven/%s" % mmcLib.name.getPath()
+                    mmcLib.downloads.artifact.url = "https://maven.minecraftforge.net/%s" % mmcLib.name.getPath()
                     mavenLibs.append(mmcLib)
                     continue
         if mmcLib.name.isLog4j():
@@ -206,89 +206,30 @@ def versionFromBuildSystemInstaller(installerVersion : MojangVersionFile, instal
     result.mavenFiles = mavenLibs
 
     libraries = []
-    #wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:1.4.1"))
-    #wrapperLib.downloads = MojangLibraryDownloads()
-    #wrapperLib.downloads.artifact = MojangArtifact()
-    #wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    #wrapperLib.downloads.artifact.sha1 = "82f01de97e29ba34be9fc628084b6d10ce2235c5"
-    #wrapperLib.downloads.artifact.size = 14351
-    #libraries.append(wrapperLib)
 
-    #wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:1.4.2"))
-    #wrapperLib.downloads = MojangLibraryDownloads()
-    #wrapperLib.downloads.artifact = MojangArtifact()
-    #wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    #wrapperLib.downloads.artifact.sha1 = "79ff9c1530e8743450c5c3ebc6e07b535437aa6e"
-    #wrapperLib.downloads.artifact.size = 22346
-    #libraries.append(wrapperLib)
-
-    #wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:1.5.1"))
-    #wrapperLib.downloads = MojangLibraryDownloads()
-    #wrapperLib.downloads.artifact = MojangArtifact()
-    #wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    #wrapperLib.downloads.artifact.sha1 = "90104e9aaa8fbedf6c3d1f6d0b90cabce080b5a9"
-    #wrapperLib.downloads.artifact.size = 29892
-    #libraries.append(wrapperLib)
-
-    #wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:1.5.3"))
-    #wrapperLib.downloads = MojangLibraryDownloads()
-    #wrapperLib.downloads.artifact = MojangArtifact()
-    #wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    #wrapperLib.downloads.artifact.sha1 = "2b0e06937349a209dbb90dca6381258daa456ad7"
-    #wrapperLib.downloads.artifact.size = 30486
-    #libraries.append(wrapperLib)
-
-    #wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:1.5.4"))
-    #wrapperLib.downloads = MojangLibraryDownloads()
-    #wrapperLib.downloads.artifact = MojangArtifact()
-    #wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    #wrapperLib.downloads.artifact.sha1 = "e97805af76d4c1cebb753132eadbabd92e67a17b"
-    #wrapperLib.downloads.artifact.size = 34299
-    #libraries.append(wrapperLib)
-
-    #wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:mmc1"))
-    #wrapperLib.downloads = MojangLibraryDownloads()
-    #wrapperLib.downloads.artifact = MojangArtifact()
-    #wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    #wrapperLib.downloads.artifact.sha1 = "e8e0fe708742ecf15ab4af55ae8227fa4349362d"
-    #wrapperLib.downloads.artifact.size = 34628
-    #libraries.append(wrapperLib)
-
-    #wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:1.5.5"))
-    #wrapperLib.downloads = MojangLibraryDownloads()
-    #wrapperLib.downloads.artifact = MojangArtifact()
-    #wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    #wrapperLib.downloads.artifact.sha1 = "566dfd60aacffaa02884614835f1151d36f1f985"
-    #wrapperLib.downloads.artifact.size = 34331
-    #libraries.append(wrapperLib)
-
-    #wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:mmc2"))
-    #wrapperLib.downloads = MojangLibraryDownloads()
-    #wrapperLib.downloads.artifact = MojangArtifact()
-    #wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    #wrapperLib.downloads.artifact.sha1 = "59955da85e408d96b9f566577e4e77d115309282"
-    #wrapperLib.downloads.artifact.size = 34406
-    #libraries.append(wrapperLib)
-
-    wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:mmc3"))
+    wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:mmc4"))
     wrapperLib.downloads = MojangLibraryDownloads()
     wrapperLib.downloads.artifact = MojangArtifact()
-    wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    wrapperLib.downloads.artifact.sha1 = "71eee023a515b79bb7b235c5c08b045a0db67ce1"
-    wrapperLib.downloads.artifact.size = 34445
+    wrapperLib.downloads.artifact.url = "https://phit.link/s/ForgeWrapper-mmc4.jar"
+    wrapperLib.downloads.artifact.sha1 = "a9d2d12440cdec6852aa39a8d343d44805c8aadb"
+    wrapperLib.downloads.artifact.size = 36203
     libraries.append(wrapperLib)
 
     for upstreamLib in installerVersion.libraries:
         mmcLib = MultiMCLibrary(upstreamLib.to_json())
         if mmcLib.name.group == "net.minecraftforge":
-            if mmcLib.name.artifact == "forge":
+            if mmcLib.name.artifact == "forge" and not mmcLib.name.classifier:
                 fixedName = mmcLib.name
                 fixedName.classifier = "launcher"
                 mmcLib.downloads.artifact.path = fixedName.getPath()
-                mmcLib.downloads.artifact.url = "https://files.minecraftforge.net/maven/%s" % fixedName.getPath()
+                mmcLib.downloads.artifact.url = "https://maven.minecraftforge.net/%s" % fixedName.getPath()
                 mmcLib.name = fixedName
                 libraries.append(mmcLib)
                 continue
+        # forge 49.0.4+ sets an empty client download https://github.com/MinecraftForge/MinecraftForge/commit/5c15aa3322db8a3f95e97390638f80eb6d4e5d15
+        # so we need clear the url to stop mmc from downloading it
+        if not mmcLib.downloads.artifact.url and mmcLib.name.classifier == "client":
+            continue
         if mmcLib.name.isLog4j():
             continue
         libraries.append(mmcLib)
@@ -299,6 +240,12 @@ def versionFromBuildSystemInstaller(installerVersion : MojangVersionFile, instal
     mcArgs = "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userType ${user_type} --versionType ${version_type}"
     for arg in installerVersion.arguments.game:
         mcArgs += " %s" % arg
+    if "--fml.forgeVersion" not in installerVersion.arguments.game:
+        mcArgs += " --fml.forgeVersion %s" % version.rawVersion
+    if "--fml.mcVersion" not in installerVersion.arguments.game:
+        mcArgs += " --fml.mcVersion %s" % version.mcversion
+    if "--fml.forgeGroup" not in installerVersion.arguments.game:
+        mcArgs += " --fml.forgeGroup net.minecraftforge"
     result.minecraftArguments = mcArgs
     return result
 
