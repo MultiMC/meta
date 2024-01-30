@@ -210,8 +210,8 @@ def versionFromBuildSystemInstaller(installerVersion : MojangVersionFile, instal
     wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:mmc4"))
     wrapperLib.downloads = MojangLibraryDownloads()
     wrapperLib.downloads.artifact = MojangArtifact()
-    wrapperLib.downloads.artifact.url = "https://phit.link/s/ForgeWrapper-mmc4.jar"
-    wrapperLib.downloads.artifact.sha1 = "a9d2d12440cdec6852aa39a8d343d44805c8aadb"
+    wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
+    wrapperLib.downloads.artifact.sha1 = "9a7d2f13be2070525909f30a26f3832db611009a"
     wrapperLib.downloads.artifact.size = 36203
     libraries.append(wrapperLib)
 
