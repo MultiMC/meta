@@ -75,7 +75,7 @@ def getSingleNeoforgeFilesManifest(longversion, legacy):
 
         if file["type"] != 'FILE':
             continue
-        if file["name"].endswith((".md5", ".sha1", ".sha256", ".sha512", ".pom")):
+        if file["name"].endswith((".md5", ".sha1", ".sha256", ".sha512", ".pom", ".asc")):
             continue
 
         fileName = file["name"]
@@ -134,8 +134,13 @@ for longversion in main_json:
 
     try:
         files = getSingleNeoforgeFilesManifest(longversion, legacy)
+    except requests.exceptions.HTTPError as err:
+        if err.response.status_code == 404:
+            continue
+        else:
+            raise
     except:
-        continue
+        raise
 
     entry = NeoforgeEntry(
         package=package,
