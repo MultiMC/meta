@@ -207,12 +207,20 @@ def versionFromBuildSystemInstaller(installerVersion : MojangVersionFile, instal
 
     libraries = []
 
-    wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:mmc4"))
+    # wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:mmc4"))
+    # wrapperLib.downloads = MojangLibraryDownloads()
+    # wrapperLib.downloads.artifact = MojangArtifact()
+    # wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
+    # wrapperLib.downloads.artifact.sha1 = "9a7d2f13be2070525909f30a26f3832db611009a"
+    # wrapperLib.downloads.artifact.size = 36203
+    # libraries.append(wrapperLib)
+
+    wrapperLib = MultiMCLibrary(name=GradleSpecifier("io.github.zekerzhayard:ForgeWrapper:mmc5"))
     wrapperLib.downloads = MojangLibraryDownloads()
     wrapperLib.downloads.artifact = MojangArtifact()
     wrapperLib.downloads.artifact.url = "https://files.multimc.org/maven/%s" % (wrapperLib.name.getPath())
-    wrapperLib.downloads.artifact.sha1 = "9a7d2f13be2070525909f30a26f3832db611009a"
-    wrapperLib.downloads.artifact.size = 36203
+    wrapperLib.downloads.artifact.sha1 = "d82cb39636a5092a8e5b5de82ccfe5f7e70e8d49"
+    wrapperLib.downloads.artifact.size = 35390
     libraries.append(wrapperLib)
 
     for upstreamLib in installerVersion.libraries:
