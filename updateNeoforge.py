@@ -192,7 +192,6 @@ for id, entry in newIndex.versions.items():
         continue
 
     version = NeoforgeVersion(entry)
-    print(version.longVersion)
 
     if version.url() == None:
         eprint ("Skipping %d with no valid files" % version.build)
