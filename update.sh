@@ -40,6 +40,7 @@ cd "${BASEDIR}"
 
 ./updateMojang.py || fail_in
 ./updateForge.py || fail_in
+./updateNeoforge.py || fail_in
 ./updateFabric.py || fail_in
 ./updateQuilt.py || fail_in
 ./updateLiteloader.py || fail_in
@@ -48,6 +49,7 @@ if [ "${DEPLOY_TO_GIT}" = true ] ; then
     cd "${BASEDIR}/${UPSTREAM_DIR}"
     git add mojang/version_manifest_v2.json mojang/versions/* mojang/assets/* || fail_in
     git add forge/*.json forge/version_manifests/*.json forge/installer_manifests/*.json forge/files_manifests/*.json forge/installer_info/*.json || fail_in
+    git add neoforge/*.json neoforge/version_manifests/*.json neoforge/installer_manifests/*.json neoforge/files_manifests/*.json neoforge/installer_info/*.json || fail_in
     git add fabric/loader-installer-json/*.json fabric/meta-v2/*.json fabric/jars/*.json || fail_in
     git add quilt/loader-installer-json/*.json quilt/meta-v3/*.json quilt/jars/*.json || fail_in
     git add liteloader/*.json || fail_in
@@ -65,6 +67,7 @@ cd "${BASEDIR}"
 
 ./generateMojang.py || fail_out
 ./generateForge.py || fail_out
+./generateNeoforge.py || fail_out
 ./generateFabric.py || fail_out
 ./generateQuilt.py || fail_out
 ./generateLiteloader.py || fail_out
@@ -74,6 +77,7 @@ if [ "${DEPLOY_TO_GIT}" = true ] ; then
     cd "${BASEDIR}/${MMC_DIR}"
     git add index.json org.lwjgl/* net.minecraft/* || fail_out
     git add net.minecraftforge/* || fail_out
+    git add net.neoforged/* || fail_out
     git add net.fabricmc.fabric-loader/* net.fabricmc.intermediary/* || fail_out
     git add org.quiltmc.quilt-loader/* || fail_out
     git add com.mumfrey.liteloader/* || fail_out
