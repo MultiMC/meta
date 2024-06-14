@@ -63,6 +63,10 @@ def versionFromBuildSystemInstaller(installerVersion : MojangVersionFile, instal
     result.minecraftArguments = mcArgs
     return result
 
+print("")
+print("Making dirs...")
+os.makedirs("multimc/net.neoforged/", exist_ok=True)
+
 # load the locally cached version list
 with open("upstream/neoforge/derived_index.json", 'r', encoding='utf-8') as f:
     main_json = json.load(f)

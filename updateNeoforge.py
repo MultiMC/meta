@@ -75,13 +75,15 @@ def getSingleNeoforgeFilesManifest(longversion, legacy):
 
         if file["type"] != 'FILE':
             continue
-        if file["name"].endswith((".md5", ".sha1", ".sha256", ".sha512", ".pom", ".asc")):
+        if file["name"].endswith((".md5", ".sha1", ".sha256", ".sha512", ".pom", ".asc", ".module")):
             continue
 
         fileName = file["name"]
         filePrefix = '%s-%s-' %  ("forge" if legacy else "neoforge", longversion)
 
-        assert fileName.startswith(filePrefix)
+        if not fileName.startswith(filePrefix):
+            print("fileName", fileName, "does not start with", filePrefix)
+            assert False
        
         fileSuffix = fileName[len(filePrefix):]
         classifier, extension = os.path.splitext(fileSuffix)
