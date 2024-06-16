@@ -131,7 +131,10 @@ for longversion in main_json:
         package = "neoforge"
         branch = match.group("branch")
         build = int(match.group("build"))
-        mcversion = '1.%s.%s' % (match.group('mcminor'), match.group('mcpatch'))
+        if match.group('mcpatch') == '0':
+            mcversion = '1.%s' % (match.group('mcminor'))
+        else:
+            mcversion = '1.%s.%s' % (match.group('mcminor'), match.group('mcpatch'))
         ver = match.group("build")
 
     try:
