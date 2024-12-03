@@ -114,7 +114,7 @@ class ProcessorSpec(JsonObject):
 
 class NeoforgeInstallerProfileV1(JsonObject):
     _comment = ListProperty(StringProperty)
-    spec = IntegerProperty(required=True, choices=[1])
+    spec = DecimalProperty(required=True, choices=[1])
     profile = StringProperty()
     version = StringProperty()
     icon = StringProperty()
