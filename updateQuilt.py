@@ -11,6 +11,8 @@ from cachecontrol.caches import FileCache
 forever_cache = FileCache('http_cache', forever=True)
 sess = CacheControl(requests.Session(), forever_cache)
 
+blacklist = ("0.17.5-beta.5", "0.17.5-beta.4")
+
 def mkdirs(path):
     if not os.path.exists(path):
         os.makedirs(path)
@@ -21,6 +23,23 @@ def filehash(filename, hashtype, blocksize=65536):
         for block in iter(lambda: f.read(blocksize), b""):
             hash.update(block)
     return hash.hexdigest()
+
+class MavenSpecifier:
+    def __init__(self, mavenKey):
+        mavenParts = mavenKey.split(":", 3)
+        self.group = mavenParts[0]
+        self.name = mavenParts[1]
+        self.version = mavenParts[2]
+
+    def path(self):
+        return self.group.replace(".", "/") + "/" + self.name + "/" + self.version + "/"
+
+    def filename(self, ext):
+        return self.name + "-" + self.version + ext
+
+    def url(self, server, ext):
+        return server + self.path() + self.filename(ext)
+
 
 def get_maven_url(mavenKey, server, ext):
     mavenParts = mavenKey.split(":", 3)
@@ -71,12 +90,22 @@ mkdirs("upstream/quilt/jars")
 for component in ["loader"]:
     index = get_json_file("upstream/quilt/meta-v3/" + component + ".json", "https://meta.quiltmc.org/v3/versions/" + component)
     for it in index:
-        jarMavenUrl = get_maven_url(it["maven"], "https://maven.quiltmc.org/repository/release/", ".jar")
+        spec = MavenSpecifier(it["maven"])
+        jarMavenUrl = spec.url("https://maven.quiltmc.org/repository/release/", ".jar");
+        if spec.version in blacklist:
+            print("Ignoring ", jarMavenUrl)
+            continue
+        print("Looking up", jarMavenUrl)
         compute_jar_file("upstream/quilt/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
 
 # for each loader, download installer JSON file from maven
 with open("upstream/quilt/meta-v3/loader.json", 'r', encoding='utf-8') as loaderVersionIndexFile:
     loaderVersionIndex = json.load(loaderVersionIndexFile)
     for it in loaderVersionIndex:
-        mavenUrl = get_maven_url(it["maven"], "https://maven.quiltmc.org/repository/release/", ".json")
+        spec = MavenSpecifier(it["maven"])
+        mavenUrl = spec.url("https://maven.quiltmc.org/repository/release/", ".json")
+        if spec.version in blacklist:
+            print("Ignoring metadata from", mavenUrl)
+            continue
+        print("Getting metadata from", mavenUrl)
         get_json_file("upstream/quilt/loader-installer-json/" + it["version"] + ".json", mavenUrl)
