@@ -120,7 +120,8 @@ for longversion in main_json:
         match = legacyVersionExpression.match(longversion)
         if not match:
             pprint(longversion)
-            assert match
+            continue
+#            assert match
         legacy = True
         package = "forge"
         branch = match.group("branch")
