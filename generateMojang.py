@@ -158,6 +158,7 @@ def processVersionWithSerparateLWJGL(versionFile):
                 if parse_version(mmcLib.name.version) >= parse_version("2.16.0"):
                     libs_minecraft.append(mmcLib)
                 else:
+                    print("Bad log4j detected")
                     log4jVersion = '2.16.0'
                     if mmcLib.name.version == '2.0-beta9':
                         log4jVersion = '2.0-beta9-fixed'
@@ -270,8 +271,10 @@ for filename in os.listdir('upstream/mojang/versions'):
         mojangVersionFile = MojangVersionFile(json.load(json_file))
         versionFile = MojangToMultiMC(mojangVersionFile, "Minecraft", "net.minecraft", mojangVersionFile.id)
         if versionFile.releaseTime < iso8601.parse_date("2023-08-30T11:24:35+00:00"):
+            print("Processing with separate LWJGL:", filename)
             processVersionWithSerparateLWJGL(versionFile)
         else:
+            print("Processing with merged LWJGL:", filename)
             processVersionWithMergedLWJGL(versionFile)
 
 
