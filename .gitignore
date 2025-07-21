@@ -6,3 +6,5 @@ forge_cache
 __pycache__
 *.kdev4
 config_local.sh
+.venv
+problems.json
