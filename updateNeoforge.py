@@ -51,7 +51,7 @@ main_json = legacy_json + main_json
 
 newIndex = DerivedNeoforgeIndex()
 
-versionExpression = re.compile("^(?P<mcminor>[0-9]+)\\.(?P<mcpatch>[0-9]+)\\.(?P<build>[0-9]+)(?:-(?P<branch>[a-zA-Z0-9_]+))?$")
+versionExpression = re.compile("^(?P<mcminor>[0-z]+)\\.(?P<mcpatch>[0-z]+)\\.(?P<build>[0-9]+)(?:-(?P<branch>[a-zA-Z0-9_]+))?$")
 legacyVersionExpression = re.compile("^(?P<mc_version>[0-9a-zA-Z_\\.]+)-(?P<version>[0-9\\.]+\\.(?P<build>[0-9]+))(-(?P<branch>[a-zA-Z0-9\\.]+))?$")
 
 def getSingleNeoforgeFilesManifest(longversion, legacy):
