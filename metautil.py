@@ -106,6 +106,7 @@ class MojangLogging (JsonObject):
 class MojangArguments (JsonObject):
     game = ListProperty(exclude_if_none=True, default=None)
     jvm = ListProperty(exclude_if_none=True, default=None)
+    defaultUserJvm = ListProperty(name="default-user-jvm", exclude_if_none=True, default=None)
 
 class JavaVersion (JsonObject):
     component = StringProperty(default="jre-legacy")
