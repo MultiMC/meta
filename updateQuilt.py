@@ -11,7 +11,7 @@ from cachecontrol.caches import FileCache
 forever_cache = FileCache('http_cache', forever=True)
 sess = CacheControl(requests.Session(), forever_cache)
 
-blacklist = ("0.17.5-beta.5", "0.17.5-beta.4")
+blacklist = ("0.17.5-beta.5", "0.17.5-beta.4", "0.16.0-beta.9")
 
 def mkdirs(path):
     if not os.path.exists(path):
@@ -96,7 +96,12 @@ for component in ["loader"]:
             print("Ignoring ", jarMavenUrl)
             continue
         print("Looking up", jarMavenUrl)
-        compute_jar_file("upstream/quilt/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
+        jarPath = "upstream/quilt/jars/" + it["maven"].replace(":", ".")
+        try:
+            compute_jar_file(jarPath, jarMavenUrl)
+        except:
+            print("Failed to get file", jarPath, "from", jarMavenUrl)
+            raise
 
 # for each loader, download installer JSON file from maven
 with open("upstream/quilt/meta-v3/loader.json", 'r', encoding='utf-8') as loaderVersionIndexFile:
@@ -108,4 +113,9 @@ with open("upstream/quilt/meta-v3/loader.json", 'r', encoding='utf-8') as loader
             print("Ignoring metadata from", mavenUrl)
             continue
         print("Getting metadata from", mavenUrl)
-        get_json_file("upstream/quilt/loader-installer-json/" + it["version"] + ".json", mavenUrl)
+        jsonPath = "upstream/quilt/loader-installer-json/" + it["version"] + ".json"
+        try:
+            get_json_file(jsonPath, mavenUrl)
+        except:
+            print("Failed to get file", jsonPath, "from", mavenUrl)
+            raise

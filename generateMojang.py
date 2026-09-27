@@ -270,6 +270,25 @@ for filename in os.listdir('upstream/mojang/versions'):
         print("Processing", filename)
         mojangVersionFile = MojangVersionFile(json.load(json_file))
         versionFile = MojangToMultiMC(mojangVersionFile, "Minecraft", "net.minecraft", mojangVersionFile.id)
+
+        # post-process some args
+        if not mojangVersionFile.minecraftArguments and mojangVersionFile.arguments:
+            prefix = "-XX:StackShadowPages="
+            addStackShadowPagesTrait = False
+            valueStackShadowPagesTrait = 32
+            for arg in mojangVersionFile.arguments.jvm:
+                if isinstance(arg, str):
+                    if arg.startswith(prefix):
+                        valueStackShadowPagesTrait = int(arg[len(prefix):])
+                        addStackShadowPagesTrait = True
+                else:
+                    print("!!! Unrecognized structure in Minecraft jvm arguments:")
+                    pprint(arg)
+            if addStackShadowPagesTrait:
+                if not versionFile.addTraits:
+                    versionFile.addTraits = []
+                versionFile.addTraits.append("StackShadowPages={}".format(valueStackShadowPagesTrait))
+
         if versionFile.releaseTime < iso8601.parse_date("2023-08-30T11:24:35+00:00"):
             print("Processing with separate LWJGL:", filename)
             processVersionWithSerparateLWJGL(versionFile)

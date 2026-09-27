@@ -19,6 +19,14 @@ S3_BUCKET="${!S3_BUCKET_var}"
 BRANCH_var="BRANCH_$MODE"
 BRANCH="${!BRANCH_var}"
 
+function undo_sub {
+    if [ "${DISCORD_NOTIFY}" = true ] ; then
+        discord_webhook -u "${DISCORD_NOTIFY_HOOK_ERROR}" -c "Meta failed to update $1, it will be rolled back. We will proceed with the rest." --username "Meta Error"
+    fi
+    cd "${BASEDIR}/${UPSTREAM_DIR}"
+    git restore --source=HEAD --staged --worktree -- "$2"
+}
+
 function fail_in {
     if [ "${DISCORD_NOTIFY}" = true ] ; then
         discord_webhook -u "${DISCORD_NOTIFY_HOOK_ERROR}" -c "Meta failed to update: $1" --username "Meta Error"
@@ -55,7 +63,7 @@ cd "${BASEDIR}"
 ./updateForge.py || fail_in "Forge"
 ./updateNeoforge.py || fail_in "Neoforge"
 ./updateFabric.py || fail_in "Fabric"
-./updateQuilt.py || fail_in "Quilt"
+./updateQuilt.py || undo_sub "Quilt" "quilt"
 ./updateLiteloader.py || fail_in "Liteloader"
 
 if [ "${DEPLOY_TO_GIT}" = true ] ; then

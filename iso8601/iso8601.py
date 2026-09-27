@@ -165,14 +165,14 @@ def parse_date(
     """
     try:
         m = ISO8601_REGEX.match(datestring)
+        m2 = ISO8601_REGEX2.match(datestring)
     except Exception as e:
-        try:
-            m = ISO8601_REGEX2.match(datestring)
-        except Exception as e:
-            raise ParseError(e)
+        raise ParseError(e)
 
     if not m:
-        raise ParseError(f"Unable to parse date string {datestring!r}")
+        m = m2
+        if not m:
+            raise ParseError(f"Unable to parse date string {datestring!r}")
 
     # Drop any Nones from the regex matches
     # TODO: check if there's a way to omit results in regexes
