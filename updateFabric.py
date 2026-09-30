@@ -8,6 +8,8 @@ from fabricutil import *
 
 from cachecontrol.caches import FileCache
 
+import sys
+
 forever_cache = FileCache('http_cache', forever=True)
 sess = CacheControl(requests.Session(), forever_cache)
 
@@ -66,16 +68,31 @@ mkdirs("upstream/fabric/meta-v2")
 mkdirs("upstream/fabric/loader-installer-json")
 mkdirs("upstream/fabric/jars")
 
+excs = []
+
 # get the version list for each component we are interested in
 for component in ["intermediary", "loader"]:
     index = get_json_file("upstream/fabric/meta-v2/" + component + ".json", "https://meta.fabricmc.net/v2/versions/" + component)
     for it in index:
         jarMavenUrl = get_maven_url(it["maven"], "https://maven.fabricmc.net/", ".jar")
-        compute_jar_file("upstream/fabric/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
+        try:
+            compute_jar_file("upstream/fabric/jars/" + it["maven"].replace(":", "."), jarMavenUrl)
+        except:
+            e = sys.exception()
+            e.add_note(f'for jarMavenUrl={jarMavenUrl}')
+            excs.append(e)
 
 # for each loader, download installer JSON file from maven
 with open("upstream/fabric/meta-v2/loader.json", 'r', encoding='utf-8') as loaderVersionIndexFile:
     loaderVersionIndex = json.load(loaderVersionIndexFile)
     for it in loaderVersionIndex:
         mavenUrl = get_maven_url(it["maven"], "https://maven.fabricmc.net/", ".json")
-        get_json_file("upstream/fabric/loader-installer-json/" + it["version"] + ".json", mavenUrl)
+        try:
+            get_json_file("upstream/fabric/loader-installer-json/" + it["version"] + ".json", mavenUrl)
+        except:
+            e = sys.exception()
+            e.add_note(f'for mavenUrl={mavenUrl}')
+            excs.append(e)
+
+if excs:
+    raise ExceptionGroup("Downloading some Fabric files failed", excs)
