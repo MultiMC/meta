@@ -117,7 +117,7 @@ if [ "${UPDATE_FORGE_MAVEN}" = true ] ; then
     if [ "${DEPLOY_FORGE_MAVEN}" = true ] ; then
         chown -RL ${DEPLOY_FOLDER_USER}:${DEPLOY_FOLDER_GROUP} ${BASEDIR}/forgemaven/
         if [ "${DEPLOY_FORGE_MAVEN_S3}" = true ] ; then
-            rclone --config ${BASEDIR}/config/rclone.conf --checksum --exclude=".git*" --exclude=".git/**" sync ${BASEDIR}/forgemaven/ ${S3_FORGE_MAVEN} || fail_generic "Deploy Forge Maven to S3"
+            rclone --config ${BASEDIR}/config/rclone.conf --checksum --transfers 32 --checkers 32 --exclude=".git*" --exclude=".git/**" sync ${BASEDIR}/forgemaven/ ${S3_FORGE_MAVEN} || fail_generic "Deploy Forge Maven to S3"
         fi
     fi
 fi
@@ -130,7 +130,7 @@ if [ "${DEPLOY_TO_FOLDER}" = true ] ; then
     rsync -rvog --chown=${DEPLOY_FOLDER_USER}:${DEPLOY_FOLDER_GROUP} --exclude=.git ${BASEDIR}/${MMC_DIR}/ ${DEPLOY_FOLDER}
 fi
 if [ "${DEPLOY_TO_S3}" = true ] ; then
-    rclone --config ${BASEDIR}/config/rclone.conf --checksum --exclude=".git*" --exclude=".git/**" sync ${BASEDIR}/${MMC_DIR}/ ${S3_BUCKET} || fail_generic "Deploy Meta to S3"
+    rclone --config ${BASEDIR}/config/rclone.conf --checksum --transfers 32 --checkers 32 --exclude=".git*" --exclude=".git/**" sync ${BASEDIR}/${MMC_DIR}/ ${S3_BUCKET} || fail_generic "Deploy Meta to S3"
 fi
 
 if [ "${DISCORD_NOTIFY}" = true ] ; then
