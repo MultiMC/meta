@@ -56,12 +56,11 @@ def get_json_file(path, url):
         return version_json
 
 def get_binary_file(path, url):
-    with open(path, 'w', encoding='utf-8') as f:
-        r = sess.get(url)
-        r.raise_for_status()
-        with open(path, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=128):
-                f.write(chunk)
+    r = sess.get(url)
+    r.raise_for_status()
+    with open(path, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=128):
+            f.write(chunk)
 
 def compute_jar_file(path, url):
     jarPath = path + ".jar"

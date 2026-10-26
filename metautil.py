@@ -1,7 +1,21 @@
 import json
+import os
+import requests
 from pprint import pprint
 from jsonobject import *
 from properties import *
+
+def downloadFile(url, path, chunkSize=65536):
+    '''Download url to path without any HTTP cache: the file at path is the only copy.
+    It is written to path.part and renamed when complete, so path is either the whole
+    file or missing, never a partial download left behind by an interrupted run.'''
+    partPath = path + ".part"
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(partPath, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=chunkSize):
+                f.write(chunk)
+    os.replace(partPath, path)
 
 '''
 Mojang index files look like this:

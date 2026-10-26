@@ -249,11 +249,7 @@ for id, entry in newIndex.versions.items():
             # grab the installer if it's not there
             if not os.path.isfile(jarFilepath):
                 eprint ("Downloading %s" % version.url())
-                rfile = sess.get(version.url(), stream=True)
-                rfile.raise_for_status()
-                with open(jarFilepath, 'wb') as f:
-                    for chunk in rfile.iter_content(chunk_size=128):
-                        f.write(chunk)
+                downloadFile(version.url(), jarFilepath)
 
         eprint ("Processing %s" % version.url())
         # harvestables from the installer
@@ -333,11 +329,7 @@ for id, entry in newIndex.versions.items():
         if not os.path.isfile(tsPath):
             # grab the jar/zip if it's not there
             if not os.path.isfile(jarFilepath):
-                rfile = sess.get(version.url(), stream=True)
-                rfile.raise_for_status()
-                with open(jarFilepath, 'wb') as f:
-                    for chunk in rfile.iter_content(chunk_size=128):
-                        f.write(chunk)
+                downloadFile(version.url(), jarFilepath)
             # find the latest timestamp in the zip file
             tstamp =  datetime.datetime.fromtimestamp(0)
             with zipfile.ZipFile(jarFilepath, 'r') as jar:
