@@ -1,3 +1,4 @@
 *.key
 *.pub
 s3cmd.cfg
+rclone.conf
