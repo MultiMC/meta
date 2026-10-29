@@ -1,16 +1,45 @@
 import json
 import os
 import requests
+from cachecontrol import CacheControl
+from urllib3.util.retry import Retry
 from pprint import pprint
 from jsonobject import *
 from properties import *
+
+# Seconds to wait for a connection, and then for data from it. Without these, a server that
+# never answers holds a run until the kernel gives up on the connection (minutes).
+TIMEOUT = (10, 60)
+
+# A connection that fails or times out is tried again, after 0, 2, 4, 8 and 16 s: some
+# upstream servers drop a part of all connections (NeoForge's CDN, 2026-10-29). HTTP errors
+# (404 included) are not retried, the scripts handle those themselves.
+RETRIES = Retry(total=None, connect=5, read=2, status=0, other=0, backoff_factor=1,
+                allowed_methods=["GET", "HEAD"], raise_on_status=False)
+
+class Session(requests.Session):
+    '''A requests session whose requests time out (TIMEOUT) unless given a timeout'''
+    def request(self, *args, **kwargs):
+        kwargs.setdefault("timeout", TIMEOUT)
+        return super().request(*args, **kwargs)
+
+def withRetries(sess):
+    '''Make every adapter mounted in sess retry failed connections (RETRIES). Call it after
+    anything that mounts adapters, like CacheControl.'''
+    for adapter in sess.adapters.values():
+        adapter.max_retries = RETRIES
+    return sess
+
+def cachedSession(cache):
+    '''A session for the update scripts: HTTP cache in cache, timeouts, retries'''
+    return withRetries(CacheControl(Session(), cache))
 
 def downloadFile(url, path, chunkSize=65536):
     '''Download url to path without any HTTP cache: the file at path is the only copy.
     It is written to path.part and renamed when complete, so path is either the whole
     file or missing, never a partial download left behind by an interrupted run.'''
     partPath = path + ".part"
-    with requests.get(url, stream=True) as r:
+    with withRetries(Session()) as sess, sess.get(url, stream=True) as r:
         r.raise_for_status()
         with open(partPath, 'wb') as f:
             for chunk in r.iter_content(chunk_size=chunkSize):

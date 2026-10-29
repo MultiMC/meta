@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 import os, requests
-from cachecontrol import CacheControl
 import datetime
 import hashlib, json
 import zipfile
 from fabricutil import *
 
 from cachecontrol.caches import FileCache
+from metautil import cachedSession
 
 forever_cache = FileCache('http_cache', forever=True)
-sess = CacheControl(requests.Session(), forever_cache)
+sess = cachedSession(forever_cache)
 
 def mkdirs(path):
     if not os.path.exists(path):

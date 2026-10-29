@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 import requests
-from cachecontrol import CacheControl
 import json
 from metautil import *
 
 from cachecontrol.caches import FileCache
+from metautil import cachedSession
 
 forever_cache = FileCache('http_cache', forever=True)
-sess = CacheControl(requests.Session(), forever_cache)
+sess = cachedSession(forever_cache)
 
 def get_version_file(path, url):
     with open(path, 'w', encoding='utf-8') as f:

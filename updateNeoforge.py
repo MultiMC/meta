@@ -6,8 +6,8 @@ from __future__ import print_function
 import sys
 
 import requests
-from cachecontrol import CacheControl
 from cachecontrol.caches import FileCache
+from metautil import cachedSession
 
 import json
 import copy
@@ -33,7 +33,7 @@ def filehash(filename, hashtype, blocksize=65536):
     return hash.hexdigest()
 
 forever_cache = FileCache('http_cache', forever=True)
-sess = CacheControl(requests.Session(), forever_cache)
+sess = cachedSession(forever_cache)
 
 # get the remote version list fragments
 r = sess.get('https://maven.neoforged.net/api/maven/versions/releases/net/neoforged/neoforge')

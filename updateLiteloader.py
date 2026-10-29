@@ -6,8 +6,8 @@ from __future__ import print_function
 import sys
 
 import requests
-from cachecontrol import CacheControl
 from cachecontrol.caches import FileCache
+from metautil import cachedSession
 
 import json
 from jsonobject import *
@@ -19,7 +19,7 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 forever_cache = FileCache('http_cache', forever=True)
-sess = CacheControl(requests.Session(), forever_cache)
+sess = cachedSession(forever_cache)
 
 
 # get the remote version list
