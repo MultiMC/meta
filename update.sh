@@ -18,35 +18,23 @@ BRANCH_var="BRANCH_$MODE"
 BRANCH="${!BRANCH_var}"
 
 function undo_sub {
-    if [ "${DISCORD_NOTIFY}" = true ] ; then
-        discord_webhook -u "${DISCORD_NOTIFY_HOOK_ERROR}" -c "Meta failed to update $1, it will be rolled back. We will proceed with the rest." --username "Meta Error"
-    fi
     cd "${BASEDIR}/${UPSTREAM_DIR}"
     git restore --source=HEAD --staged --worktree -- "$2"
 }
 
 function fail_in {
-    if [ "${DISCORD_NOTIFY}" = true ] ; then
-        discord_webhook -u "${DISCORD_NOTIFY_HOOK_ERROR}" -c "Meta failed to update: $1" --username "Meta Error"
-    fi
     cd "${BASEDIR}/${UPSTREAM_DIR}"
     git reset --hard HEAD
     exit 1
 }
 
 function fail_out {
-    if [ "${DISCORD_NOTIFY}" = true ] ; then
-        discord_webhook -u "${DISCORD_NOTIFY_HOOK_ERROR}" -c "Meta failed to output: $1" --username "Meta Error"
-    fi
     cd "${BASEDIR}/${MMC_DIR}"
     git reset --hard HEAD
     exit 1
 }
 
 function fail_generic {
-    if [ "${DISCORD_NOTIFY}" = true ] ; then
-        discord_webhook -u "${DISCORD_NOTIFY_HOOK_ERROR}" -c "Meta failed to $1" --username "Meta Error"
-    fi
     exit 1
 }
 
@@ -131,10 +119,6 @@ if [ "${DEPLOY_TO_FOLDER}" = true ] ; then
 fi
 if [ "${DEPLOY_TO_S3}" = true ] ; then
     rclone --config ${BASEDIR}/config/rclone.conf --checksum --transfers 32 --checkers 32 --exclude=".git*" --exclude=".git/**" sync ${BASEDIR}/${MMC_DIR}/ ${S3_BUCKET} || fail_generic "Deploy Meta to S3"
-fi
-
-if [ "${DISCORD_NOTIFY}" = true ] ; then
-    discord_webhook -u "${DISCORD_NOTIFY_HOOK_OK}" -c "Meta update succeeded!" --username "Meta"
 fi
 
 exit 0
