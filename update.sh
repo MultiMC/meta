@@ -51,6 +51,7 @@ cd "${BASEDIR}"
 ./updateFabric.py || fail_in "Fabric"
 ./updateQuilt.py || undo_sub "Quilt" "quilt"
 ./updateLiteloader.py || fail_in "Liteloader"
+./updateJavas.py || fail_in "Java"
 
 if [ "${DEPLOY_TO_GIT}" = true ] ; then
     cd "${BASEDIR}/${UPSTREAM_DIR}"
@@ -60,6 +61,7 @@ if [ "${DEPLOY_TO_GIT}" = true ] ; then
     git add fabric/loader-installer-json/*.json fabric/meta-v2/*.json fabric/jars/*.json || fail_in "git add"
     git add quilt/loader-installer-json/*.json quilt/meta-v3/*.json quilt/jars/*.json || fail_in "git add"
     git add liteloader/*.json || fail_in "git add"
+    git add jres/all.json java_runtime/ || fail_in "git add"
     if ! git diff --cached --exit-code ; then
         git commit -a -m "Update ${currentDate}" || fail_in "git commit"
         GIT_SSH_COMMAND="ssh -i ${BASEDIR}/config/meta-upstream.key" git push || fail_generic "git push upstream"
@@ -78,6 +80,7 @@ cd "${BASEDIR}"
 ./generateFabric.py || fail_out "Fabric"
 ./generateQuilt.py || fail_out "Quilt"
 ./generateLiteloader.py || fail_out "Liteloader"
+./generateJavas.py || fail_out "Java"
 ./index.py || fail_out "Generating Index"
 
 if [ "${DEPLOY_TO_GIT}" = true ] ; then
@@ -88,6 +91,7 @@ if [ "${DEPLOY_TO_GIT}" = true ] ; then
     git add net.fabricmc.fabric-loader/* net.fabricmc.intermediary/* || fail_out "git add"
     git add org.quiltmc.quilt-loader/* || fail_out "git add"
     git add com.mumfrey.liteloader/* || fail_out "git add"
+    git add net.minecraft.java/* net.adoptium.java/* com.ibm.java/* com.azul.java/* || fail_out "git add"
     if [ -d "org.lwjgl3" ]; then
         git add org.lwjgl3/* || fail_out "git add"
     fi

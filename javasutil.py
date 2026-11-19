@@ -45,6 +45,47 @@ class AllPlatformsJREManifest(JsonObject):
 class JavaVersion(JsonObject):
     download = ObjectProperty(PistonArtifact)
 
+class RuntimeJavaVersion(JsonObject):
+    major = IntegerProperty()
+    minor = IntegerProperty()
+    security = IntegerProperty()
+    build = IntegerProperty(exclude_if_none=True, default=None)
+    buildstr = StringProperty(exclude_if_none=True, default=None)
+    name = StringProperty(exclude_if_none=True, default=None)
+
+    def __str__(self):
+        version = "%d.%d.%d" % (self.major, self.minor, self.security)
+        if self.build is not None:
+            version = "%s+%d" % (version, self.build)
+        if self.buildstr is not None:
+            version = "%s-%s" % (version, self.buildstr)
+        return version
+
+class JavaChecksum(JsonObject):
+    type = StringProperty()
+    hash = StringProperty()
+
+class JavaRuntime(JsonObject):
+    name = StringProperty()
+    vendor = StringProperty()
+    url = StringProperty()
+    releaseTime = ISOTimestampProperty()
+    checksum = ObjectProperty(JavaChecksum, exclude_if_none=True, default=None)
+    downloadType = StringProperty()
+    packageType = StringProperty()
+    version = ObjectProperty(RuntimeJavaVersion)
+    runtimeOS = StringProperty()
+
+JAVA_RUNTIME_BASE_DIR = "java_runtime"
+JAVA_ADOPTIUM_DIR = "adoptium"
+JAVA_OPENJ9_DIR = "ibm"
+JAVA_AZUL_DIR = "azul"
+
+JAVA_MINECRAFT_COMPONENT = "net.minecraft.java"
+JAVA_ADOPTIUM_COMPONENT = "net.adoptium.java"
+JAVA_OPENJ9_COMPONENT = "com.ibm.java"
+JAVA_AZUL_COMPONENT = "com.azul.java"
+
 
 class VersionIndex(JsonObject):
     java8 = ObjectProperty(JavaVersion, name="8") # legacy -> 8

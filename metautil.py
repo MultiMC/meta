@@ -6,6 +6,7 @@ from urllib3.util.retry import Retry
 from pprint import pprint
 from jsonobject import *
 from properties import *
+from javasutil import JavaRuntime
 
 # Seconds to wait for a connection, and then for data from it. Without these, a server that
 # never answers holds a run until the kernel gives up on the connection (minutes).
@@ -225,6 +226,7 @@ class MultiMCVersionFile (VersionedJsonObject):
     addTraits = ListProperty(StringProperty, name="+traits", exclude_if_none=True, default=None)
     addTweakers = ListProperty(StringProperty, name="+tweakers", exclude_if_none=True, default=None)
     order = IntegerProperty(exclude_if_none=True, default=None)
+    runtimes = ListProperty(JavaRuntime, exclude_if_none=True, default=None)
 
 class UnknownComplianceLevelException(Exception):
     """Exception raised for unknown Mojang compliance level
